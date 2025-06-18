@@ -1,0 +1,25 @@
+{
+  "name": "timbot",
+  "version": "1.0.0",
+  "description": "TimBot für die Age of Empires IV Community 'Towncenter' - Discord Bot mit Ranking-System und Railway Deployment.",
+  "main": "src/bot.js",
+  "scripts": {
+    "start": "node src/bot.js",
+    "dev": "nodemon src/bot.js",
+    "migrate": "node src/database/migrate.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "discord.js": "^14.13.0",
+    "sqlite3": "^5.1.6",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.4.5",
+    "winston": "^3.10.0",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+} 
