@@ -2,7 +2,7 @@ const { loadConfig } = require('../../config/config');
 const config = loadConfig();
 
 async function fetchPlayerBySteamId(steamId) {
-  const url = `${config.aoe4worldApiUrl}players/steam/${steamId}`;
+  const url = `${config.aoe4worldApiUrl}players/${steamId}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('Spieler nicht gefunden');
   return res.json();
