@@ -1,6 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const dbPath = process.env.DATABASE_URL || './data/timbot.sqlite';
 
+// Migration beim Start ausführen
+require('./database/migrate');
+
 function upsertRanking({ player_id, elo, rank, last_update, recent_matches }) {
   return new Promise((resolve, reject) => {
     const db = new sqlite3.Database(dbPath);
