@@ -1,0 +1,20 @@
+# Node
+node_modules/
+.env
+.env.*
+
+# Railway/Deployment
+/data/
+*.sqlite
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# System
+.DS_Store
+Thumbs.db
+
+# Sonstiges
+config/ranking_channel.json 
