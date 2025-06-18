@@ -6,7 +6,6 @@ const winston = require('winston');
 const cron = require('node-cron');
 const path = require('path');
 const fs = require('fs');
-require('./database/migrate');
 
 // Logger Setup
 const logger = winston.createLogger({

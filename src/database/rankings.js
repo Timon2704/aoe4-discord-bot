@@ -1,43 +1,29 @@
-const sqlite3 = require('sqlite3').verbose();
-const dbPath = process.env.DATABASE_URL || './data/timbot.sqlite';
+const { pool } = require('./init');
 
-function upsertRanking({ player_id, elo, rank, last_update, recent_matches }) {
-  return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(dbPath);
-    db.run(
-      `INSERT INTO rankings (player_id, elo, rank, last_update, recent_matches)
-       VALUES (?, ?, ?, ?, ?)
-       ON CONFLICT(player_id) DO UPDATE SET elo=excluded.elo, rank=excluded.rank, last_update=excluded.last_update, recent_matches=excluded.recent_matches`,
-      [player_id, elo, rank, last_update, recent_matches],
-      function (err) {
-        db.close();
-        if (err) return reject(err);
-        resolve(this.lastID);
-      }
-    );
-  });
+async function upsertRanking({ player_id, elo, rank, last_update, recent_matches }) {
+  await pool.query(
+    `INSERT INTO rankings (player_id, elo, rank, last_update, recent_matches)
+     VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (player_id) DO UPDATE
+     SET elo = EXCLUDED.elo,
+         rank = EXCLUDED.rank,
+         last_update = EXCLUDED.last_update,
+         recent_matches = EXCLUDED.recent_matches`,
+    [player_id, elo, rank, last_update, recent_matches]
+  );
 }
 
-function getRankingByPlayer(player_id) {
-  return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(dbPath);
-    db.get(`SELECT * FROM rankings WHERE player_id = ?`, [player_id], (err, row) => {
-      db.close();
-      if (err) return reject(err);
-      resolve(row);
-    });
-  });
+async function getRankingByPlayer(player_id) {
+  const res = await pool.query(
+    `SELECT * FROM rankings WHERE player_id = $1`,
+    [player_id]
+  );
+  return res.rows[0];
 }
 
-function listRankings() {
-  return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(dbPath);
-    db.all(`SELECT * FROM rankings`, [], (err, rows) => {
-      db.close();
-      if (err) return reject(err);
-      resolve(rows);
-    });
-  });
+async function listRankings() {
+  const res = await pool.query(`SELECT * FROM rankings`);
+  return res.rows;
 }
 
 module.exports = { upsertRanking, getRankingByPlayer, listRankings }; 
