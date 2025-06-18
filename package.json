@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/bot.js",
     "dev": "nodemon src/bot.js",
-    "migrate": "node src/database/migrate.js"
+    "migrate": "node src/database/migrate.js",
+    "deploy-commands": "node src/deploy-commands.js"
   },
   "engines": {
     "node": ">=18.0.0"
