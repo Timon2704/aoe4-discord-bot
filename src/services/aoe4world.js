@@ -1,4 +1,3 @@
-const fetch = require('node-fetch');
 const { loadConfig } = require('../../config/config');
 const config = loadConfig();
 
