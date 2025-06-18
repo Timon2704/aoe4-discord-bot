@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { listPlayers } = require('../database/players');
+const { listPlayers, updatePlayer } = require('../database/players');
 const { upsertRanking } = require('../database/rankings');
-const { fetchPlayerRankings, fetchRecentMatches } = require('../services/aoe4world');
+const { fetchPlayerRankings, fetchRecentMatches, fetchPlayerByAoe4worldId } = require('../services/aoe4world');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,6 +14,12 @@ module.exports = {
       const players = await listPlayers();
       for (const player of players) {
         try {
+          // Hole aktuelle Spieler-Daten von aoe4world
+          const playerData = await fetchPlayerByAoe4worldId(player.aoe4world_id);
+          // Aktualisiere alle Spielerfelder
+          await updatePlayer(playerData);
+
+          // Ranking wie gehabt aktualisieren
           const rankingData = await fetchPlayerRankings(player.aoe4world_id);
           const leaderboard = rankingData.leaderboards.find(l => l.leaderboard_id === 'rm_1v1');
           const matches = await fetchRecentMatches(player.aoe4world_id);
@@ -28,7 +34,7 @@ module.exports = {
           logger.warn(`Konnte Ranking für ${player.name} nicht aktualisieren: ${err}`);
         }
       }
-      await interaction.editReply('Ranking wurde aktualisiert!');
+      await interaction.editReply('Ranking und Spieler-Daten wurden aktualisiert!');
     } catch (err) {
       logger.error('Fehler beim Aktualisieren des Rankings:', err);
       await interaction.editReply('Fehler beim Aktualisieren des Rankings.');
